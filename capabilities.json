@@ -1,0 +1,177 @@
+{
+    "dataRoles": [
+        {
+            "displayName": "Valeur",
+            "displayNameKey": "FieldValue",
+            "name": "fieldValue",
+            "kind": "GroupingOrMeasure",
+            "description": "A table field or measure whose first value will be displayed in the box"
+        },
+        {
+            "displayName": "Label measure (DAX)",
+            "displayNameKey": "LabelMeasure",
+            "name": "labelMeasure",
+            "kind": "Measure",
+            "description": "DAX measure defining the label displayed on the left."
+        }
+    ],
+    "objects": {
+        "labelStyle": {
+            "displayName": "Label style",
+            "properties": {
+                "titleText": {
+                    "displayName": "Label text",
+                    "description": "Free text or DAX measurement (fx). Ignored if the 'Label (DAX)' bucket is filled.",
+                    "type": { "text": true }
+                },
+                "fontColor": {
+                    "displayName": "Font color",
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "backgroundColor": {
+                    "displayName": "Background color",
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "fontSize": {
+                    "displayName": "Font size",
+                    "type": { "formatting": { "fontSize": true } }
+                },
+                "fontBold": {
+                    "displayName": "Bold",
+                    "type": { "bool": true }
+                },
+                "minWidth": {
+                    "displayName": "Minimum width (px)",
+                    "type": { "numeric": true }
+                },
+                "paddingH": {
+                    "displayName": "Horizontal padding (px)",
+                    "type": { "numeric": true }
+                },
+                "borderRadius": {
+                    "displayName": "Border radius (px)",
+                    "type": { "numeric": true }
+                }
+            }
+        },
+        "fieldStyle": {
+            "displayName": "Data style",
+            "properties": {
+                "displayAsCheckbox": {
+                    "displayName": "Display as checkbox",
+                    "description": "Makes the value as a read-only checkbox (for True/False fields)",
+                    "type": { "bool": true }
+                },
+                "checkboxColor": {
+                    "displayName": "Checkbox color (checked)",
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "checkboxSize": {
+                    "displayName": "Checkbox size (px)",
+                    "type": { "numeric": true }
+                },
+                "backgroundColor": {
+                    "displayName": "Background color",
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "borderColor": {
+                    "displayName": "Border color",
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "borderWidth": {
+                    "displayName": "Border width (px)",
+                    "type": { "numeric": true }
+                },
+                "fontColor": {
+                    "displayName": "Font color",
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "fontSize": {
+                    "displayName": "Font size",
+                    "type": { "formatting": { "fontSize": true } }
+                },
+                "fontBold": {
+                    "displayName": "Bold",
+                    "type": { "bool": true }
+                },
+                "paddingH": {
+                    "displayName": "Horizontal padding (px)",
+                    "type": { "numeric": true }
+                },
+                "textFormat": {
+                    "displayName": "Text format",
+                    "description": "Display format applied to the value. 'None' keeps the automatic behavior.",
+                    "type": {
+                        "enumeration": [
+                            { "displayName": "None",            "value": "none"          },
+                            { "displayName": "Whole number",    "value": "wholeNumber"   },
+                            { "displayName": "Decimal number",  "value": "decimalNumber" },
+                            { "displayName": "Percentage",      "value": "percentage"    },
+                            { "displayName": "Currency (EUR)",  "value": "currencyEUR"   },
+                            { "displayName": "Currency (USD)",  "value": "currencyUSD"   },
+                            { "displayName": "Date",            "value": "date"          }
+                        ]
+                    }
+                },
+                "decimals": {
+                    "displayName": "Decimals",
+                    "description": "Number of decimal places (numeric and currency formats only)",
+                    "type": { "numeric": true }
+                },
+                "symbolPosition": {
+                    "displayName": "Symbol position",
+                    "description": "Currency symbol placement. 'Auto' follows the Power BI locale.",
+                    "type": {
+                        "enumeration": [
+                            { "displayName": "Auto (locale)", "value": "auto"   },
+                            { "displayName": "Before",        "value": "before" },
+                            { "displayName": "After",         "value": "after"  }
+                        ]
+                    }
+                },
+                "datePattern": {
+                    "displayName": "Date pattern",
+                    "description": ".NET-style mask: dd MM yyyy MMM MMMM ddd dddd HH mm ss… Ex: dd/MM/yyyy, d MMMM yyyy HH:mm",
+                    "type": { "text": true }
+                },
+                "alignment": {
+                    "displayName": "Text alignment",
+                    "type": {
+                        "enumeration": [
+                            { "displayName": "Left", "value": "left" },
+                            { "displayName": "Center", "value": "center" },
+                            { "displayName": "Right", "value": "right" }
+                        ]
+                    }
+                },
+                "placeholderText": {
+                    "displayName": "Text if empty",
+                    "type": { "text": true }
+                }
+            }
+        }
+    },
+    "dataViewMappings": [
+        {
+            "conditions": [
+                {
+                    "fieldValue":   { "max": 1 },
+                    "labelMeasure": { "max": 1 }
+                }
+            ],
+            "categorical": {
+                "categories": {
+                    "for": { "in": "fieldValue" },
+                    "dataReductionAlgorithm": { "top": { "count": 1 } }
+                },
+                "values": {
+                    "select": [
+                        { "bind": { "to": "labelMeasure" } }
+                    ]
+                }
+            }
+        }
+    ],
+    "supportsHighlight": false,
+    "privileges": []
+}
