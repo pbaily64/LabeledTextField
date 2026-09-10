@@ -7,7 +7,7 @@
         "version": "1.1.5.0",
         "description": "Display area with label on the left (free text or DAX measurement) and value on the right",
         "supportUrl": "https://powerbi.microsoft.com",
-        "gitHubUrl": "https://github.com"
+        "gitHubUrl": "https://github.com/pbaily64/LabeledTextField"
     },
     "apiVersion": "5.11.0",
     "author": {
