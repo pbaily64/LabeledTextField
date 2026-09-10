@@ -8,6 +8,7 @@ import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructor
 import VisualUpdateOptions       = powerbi.extensibility.visual.VisualUpdateOptions;
 import IVisual                   = powerbi.extensibility.visual.IVisual;
 import IVisualHost               = powerbi.extensibility.visual.IVisualHost;
+import IVisualEventService = powerbi.extensibility.IVisualEventService;
 import DataView                  = powerbi.DataView;
 
 import { VisualFormattingSettingsModel } from "./settings";
@@ -24,6 +25,7 @@ const CURRENCY_FORMATS = ["currencyEUR", "currencyUSD"];
 export class Visual implements IVisual {
 
     private host:      IVisualHost;
+    private events: IVisualEventService;
     private container: HTMLDivElement;
     private labelEl:   HTMLSpanElement;
     private valueEl:   HTMLSpanElement;
@@ -39,6 +41,7 @@ export class Visual implements IVisual {
 
     constructor(options: VisualConstructorOptions) {
         this.host = options.host;
+        this.events = options.host.eventService;
         this.formattingSettingsService = new FormattingSettingsService();
         this.locale = options.host.locale || "fr-BE";
 
@@ -56,7 +59,24 @@ export class Visual implements IVisual {
         options.element.appendChild(this.container);
     }
 
+    // ── Rendering Events API ──────────────────────────────────────────────
+    // Exigence de certification Microsoft : le visuel doit signaler a Power BI
+    // le debut, la fin ou l'echec de son rendu. Sans cela, l'export et les
+    // captures d'ecran peuvent intervenir avant que le rendu soit termine.
+    // Le corps historique de update() est conserve tel quel dans updateCore() :
+    // ses retours anticipes sortent du coeur, et renderingFinished est malgre
+    // tout emis ci-dessous.
     public update(options: VisualUpdateOptions): void {
+        this.events.renderingStarted(options);
+        try {
+            this.updateCore(options);
+            this.events.renderingFinished(options);
+        } catch (e) {
+            this.events.renderingFailed(options, e instanceof Error ? e.message : String(e));
+        }
+    }
+
+    private updateCore(options: VisualUpdateOptions): void {
         if (!options?.dataViews?.[0]) return;
 
         this.dataView = options.dataViews[0];
